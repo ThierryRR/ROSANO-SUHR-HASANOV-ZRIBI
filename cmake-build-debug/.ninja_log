@@ -1,0 +1,9 @@
+# ninja log v6
+38	192	7672114612906935	CMakeFiles/projetbadland.dir/utilitaire.c.obj	fe19ac50907225c7
+4	236	7672114612569684	CMakeFiles/projetbadland.dir/main.c.obj	6050aff96b628114
+10	256	7672114612629711	CMakeFiles/projetbadland.dir/scroll.c.obj	910949f8da8ea56e
+27	280	7672114612786904	CMakeFiles/projetbadland.dir/bonus.c.obj	810f31efa3f7a821
+22	285	7672114612739645	CMakeFiles/projetbadland.dir/personnage.c.obj	29f1d2672c167182
+32	309	7672114612846911	CMakeFiles/projetbadland.dir/jeu.c.obj	e7a2f8ed3e431941
+16	310	7672114612679637	CMakeFiles/projetbadland.dir/menu.c.obj	ad3a8462f5a5eb56
+310	497	7672114615613646	projetbadland.exe	ab4e757262fad7dc

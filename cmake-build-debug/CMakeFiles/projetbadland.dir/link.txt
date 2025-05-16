@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2024.2.1\bin\cmake\win\x64\bin\cmake.exe" -E rm -f CMakeFiles\projetbadland.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\projetbadland.dir/objects.a @CMakeFiles\projetbadland.dir\objects1.rsp
+C:\MinGW\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\projetbadland.dir/objects.a -Wl,--no-whole-archive -o projetbadland.exe -Wl,--out-implib,libprojetbadland.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\projetbadland.dir\linkLibs.rsp
