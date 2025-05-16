@@ -20,9 +20,10 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {
 
     // 🔥 Protection : ne PAS écraser les coordonnées si c'est un DEMO
     if (strncmp(j->nom, "DEMO", 4) != 0) {
-        j->reprise_x = 3200;
-        j->reprise_y = 500;
+        j->reprise_x = 13000;
+        j->reprise_y = 800;
     }
+
 
     int reprise_x = j->reprise_x;
     int reprise_y = j->reprise_y;
@@ -159,9 +160,18 @@ FIN_NIVEAU:
     remove_int(temps_init);
     rest(200);
     if (game_over) {
-        int choix = ecran_defaiteniv1();
-        if (choix == 1) jeu_niveau_1(fond, j);
-        else if (choix == 2) ecran_menu();
+        int choix = ecran_victoireniv1();
+        if (choix == 1) {
+            j->niveau = 2;
+            j->reprise_x = 300;
+            j->reprise_y = 500;
+            sauvegarder_joueur(j);
+            jeu_niveau_2(fond, j);  // ✅ correction : appelle le vrai niveau 2 !
+        } else {
+            ecran_menu();
+        }
+
+
     } else if (!key[KEY_ESC]) {
         if (j->niveau < 2) {
             j->niveau = 2;
@@ -194,11 +204,7 @@ void jeu_niveau_2(BITMAP *fond_final, Joueur *j) {
         allegro_message("Erreur de chargement des ressources.");
         exit(1);
     }
-    // Seulement si c'est une nouvelle partie sans sauvegarde
-    if (strncmp(j->nom, "DEMO", 4) != 0 && j->reprise_x == 0 && j->reprise_y == 0) {
-        j->reprise_x = 3200;
-        j->reprise_y = 500;
-    }
+
 
 
     BonusPosition mon_bonus1[NB_BONUS] = {//niv2
@@ -212,7 +218,6 @@ void jeu_niveau_2(BITMAP *fond_final, Joueur *j) {
         creer_bonus(4000, 280, bombe0, bombe1)
     };
     BonusPosition mon_bonus3[NB_BONUS] = {//nv2
-        creer_bonus(400, 700, sprite_bonus3, NULL),
         creer_bonus(4390, 600, sprite_bonus3, NULL),
         creer_bonus(1800, 680, sprite_bonus3, NULL),
         creer_bonus(7800, 680, sprite_bonus3, NULL),
@@ -239,20 +244,24 @@ mes_caillou[2] = creer_bonus(3800, 200, caillou, NULL) // x=1800, y=200
 };
     GrpPersonnages groupe;
     groupe.nb_personnages = 1;
+    if  (j->niveau == 2 && j->reprise_x == 13000) {
+    j->reprise_x = 200;
+    j->reprise_y = 600;
+}
 
 
-    if (j->reprise_x == 0 && j->reprise_y == 0) {
-        j->reprise_x = 200;  // coordonnées de base si pas de checkpoint
-        j->reprise_y = 600;
-    }
+    // Ensuite, tu continues comme d'hab :
+    float screenx = j->reprise_x - SCREEN_W / 2;
+    if (screenx < 0) screenx = 0;
+    if (screenx > fond->w - SCREEN_W) screenx = fond->w - SCREEN_W;
+    int perso_x = j->reprise_x - (int)screenx;
 
     int reprise_x = j->reprise_x;
     int reprise_y = j->reprise_y;
 
-    float screenx = reprise_x - SCREEN_W / 2;
     if (screenx < 0) screenx = 0;
     if (screenx > fond->w - SCREEN_W) screenx = fond->w - SCREEN_W;
-    int perso_x = reprise_x - (int)screenx;
+
     float vitesses_y_pics[NB_PICS] = {0};
 
     creation_personnage(&groupe.persos[0], perso_x, reprise_y, 64, 64);
@@ -282,8 +291,8 @@ mes_caillou[2] = creer_bonus(3800, 200, caillou, NULL) // x=1800, y=200
     int jeu_lance = 0;
     int timer_clones = 0;
     int timer_malus_taille = 0;
-    float gravite_max = 2.0f;
-    float acceleration = 0.2f;
+    float gravite_max = 3.0f;
+    float acceleration = 0.6f;
 
 
     clear_bitmap(page);
@@ -354,20 +363,28 @@ mes_caillou[2] = creer_bonus(3800, 200, caillou, NULL) // x=1800, y=200
 
             screenx += dragon_speed;
             if (screenx > fin_scroll) screenx = fin_scroll;
+            int tous_passes = 1;
             for (int i = 0; i < groupe.nb_personnages; i++) {
                 int pos_abs = (int)screenx + groupe.persos[i].x;
-                if (pos_abs >= fond->w) {
-                    int choix = ecran_victoireniv1();
-                    if (choix == 1) {
-                        j->niveau = 2;
-                        sauvegarder_joueur(j);
-                        scrollingNiv2(j);
-                    } else {
-                        ecran_menu();
-                    }
-                    goto FIN_NIVEAU;
+                if (pos_abs < fond->w) {
+                    tous_passes = 0;  // Si au moins 1 n'a pas encore passé, on continue
+                    break;
                 }
             }
+
+            if (tous_passes) {
+                int choix = ecran_victoireniv1();
+                if (choix == 1) {
+                    j->niveau = 2;
+                    sauvegarder_joueur(j);
+                    scrollingNiv2(j);
+                } else {
+                    ecran_menu();
+                }
+                goto FIN_NIVEAU;
+            }
+
+           
 
             deplacer_groupe(&groupe, fond, screenx, fin_scroll,dragon_speed );
             // Appelle TOUTES les gestions de bonus classiques
@@ -429,8 +446,15 @@ FIN_NIVEAU:
     rest(200);
     if (game_over) {
         int choix = ecran_defaiteniv1();
-        if (choix == 1) jeu_niveau_2(fond, j);
-        else if (choix == 2) ecran_menu();
+
+        if (choix == 1) {
+            j->niveau = 2;
+            sauvegarder_joueur(j);
+            jeu_niveau_2(fond, j);  // ✅ Correction ici
+        } else {
+            ecran_menu();
+        }
+
     } else if (!key[KEY_ESC]) {
         if (j->niveau < 2) {
             j->niveau = 2;

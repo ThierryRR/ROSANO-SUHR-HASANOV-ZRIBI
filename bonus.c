@@ -49,12 +49,17 @@ void afficher_bonus(BonusPosition bonus, BITMAP *buffer, float screenx) {
 int collision_bonus(BonusPosition *bonus, int perso_x, int perso_y, int perso_w, int perso_h, float screenx) {
     if (!bonus->actif) return 0;
 
+    int marge = bonus->largeur / 5;  // 20% de la largeur en marge
+    if (marge < 5) marge = 5;        // minimum 5px pour éviter de trop réduire
+
     int bonus_ecran_x = bonus->x - (int)screenx;
 
-    int zone_x = bonus_ecran_x;
-    int zone_y = bonus->y ;
-    int zone_largeur = bonus->largeur ;
-    int zone_hauteur = bonus->hauteur;
+    int zone_x = bonus_ecran_x + marge;
+    int zone_y = bonus->y + marge;
+    int zone_largeur = bonus->largeur - 2 * marge;
+    int zone_hauteur = bonus->hauteur - 2 * marge;
+
+    if (zone_largeur <= 0 || zone_hauteur <= 0) return 0;
 
     if (perso_x + perso_w > zone_x &&
         perso_x < zone_x + zone_largeur &&
@@ -442,7 +447,7 @@ void gerer_bonus_colle(BonusPosition bonus[], GrpPersonnages *groupe, int screen
 }
 
 int collision_bonus_pic(BonusPosition *bonus, int perso_x, int perso_y, int perso_w, int perso_h, float screenx) {
-    int marge_collision = -1; // Valeur négative = "il faut vraiment coller le pic"
+    int marge_collision = 64; // Valeur négative = "il faut vraiment coller le pic"
 
     int bonus_ecran_x = bonus->x - (int)screenx;
 
