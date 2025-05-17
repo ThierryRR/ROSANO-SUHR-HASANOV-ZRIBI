@@ -116,7 +116,7 @@ void ecran_menu() {
                 if (j != NULL) {
                     if (j->niveau == 1) scrollingNiv1(j);
                     else if (j->niveau == 2) scrollingNiv2(j);
-                    else allegro_message("Niveau inconnu");
+                    else scrollingNiv3(j);
                     // on revient au menu après
                 } else {
                     // Si j est NULL (appui ESC ou SPACE), on reste dans la boucle du menu

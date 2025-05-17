@@ -100,3 +100,32 @@ void scrollingNiv2(Joueur *j) {
         destroy_bitmap(mes_fonds[i]);
     }
 }
+void scrollingNiv3(Joueur *j) {
+    const char* noms_fichiers[] = {
+        "niveau3_0.bmp",
+        "niveau3_1.bmp",
+        "niveau3_2.bmp",
+        "niveau3_3.bmp",
+        "niveau3_5.bmp",
+        "niveau3_6.bmp",
+        "niveau3_7.bmp",
+        "niveau3_8.bmp",
+
+    };
+    const int nb_fonds = sizeof(noms_fichiers) / sizeof(noms_fichiers[0]);
+    BITMAP* mes_fonds[nb_fonds];
+    for (int i = 0; i < nb_fonds; i++) {
+        mes_fonds[i] = load_bitmap(noms_fichiers[i], NULL);
+        if (mes_fonds[i] == NULL) {
+            for (int j = 0; j < i; j++) {
+                destroy_bitmap(mes_fonds[j]);
+            }
+            exit(1);
+        }
+    }
+    BITMAP* fond_final = fusion(mes_fonds, nb_fonds);
+    jeu_niveau_3(fond_final,j);
+    for (int i = 0; i < nb_fonds; i++) {
+        destroy_bitmap(mes_fonds[i]);
+    }
+}
