@@ -41,8 +41,6 @@ BITMAP* fusion(BITMAP** images, int nb_images) {
 
         "niveau1_0.bmp",
         "niveau1_1.bmp",
-        "niveau1_1A.bmp",
-        "niveau1_1B.bmp",
         "niveau1_2.bmp" ,
         "niveau1_3.bmp",
         "niveau1_4.bmp",

@@ -6,7 +6,7 @@
 #include "boolean.h"
 #include "scroll.h"
 #include "bonus.h"
-#define NB_PICS 3
+
 void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {
     BITMAP *fond = copier_bitmap(fond_final);
     BITMAP *page = create_bitmap(SCREEN_W, SCREEN_H);
@@ -20,7 +20,7 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {
 
     // 🔥 Protection : ne PAS écraser les coordonnées si c'est un DEMO
     if (strncmp(j->nom, "DEMO", 4) != 0) {
-        j->reprise_x = 13000;
+        j->reprise_x = 500;
         j->reprise_y = 800;
     }
 
@@ -35,9 +35,7 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {
 
     creation_personnage(&groupe.persos[0], perso_x, reprise_y, 64, 64);
 
-    checkpoint cp = creer_checkpoint(600, 330, "drapeau0.bmp", "drapeau1.bmp");
-    cp.largeur = cp.sprite[0]->w / 12;
-    cp.hauteur = cp.sprite[0]->h / 12;
+
 
     game_over = false;
     int fin_scroll = fond->w - SCREEN_W;
@@ -125,16 +123,7 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {
                 continue;
             }
             deplacer_groupe(&groupe, fond, screenx, fin_scroll ,dragon_speed );
-
-
-            if (collision_checkpoint(&cp, &groupe, &reprise_x, &reprise_y, screenx)) {
-                j->reprise_x = cp.x;
-                j->reprise_y = cp.y;
-                sauvegarder_joueur(j);
-            }
-
             if (groupe_est_mort(&groupe)) game_over = true;
-
             int int_screenx = (int)screenx;
             int part1 = fond->w - int_screenx;
             int part2 = SCREEN_W - part1;
@@ -145,10 +134,6 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {
                 blit(fond, page, int_screenx, 0, 0, 0, part1, SCREEN_H);
                 blit(fond, page, 0, 0, part1, 0, part2, SCREEN_H);
             }
-
-
-
-            afficher_checkpoint(page, cp, int_screenx);
             dessiner_groupe(&groupe, page);
             temps--;
         }
@@ -244,7 +229,7 @@ mes_caillou[2] = creer_bonus(3800, 200, caillou, NULL) // x=1800, y=200
 };
     GrpPersonnages groupe;
     groupe.nb_personnages = 1;
-    if  (j->niveau == 2 && j->reprise_x == 13000) {
+    if  (j->niveau == 2 && j->reprise_x == 500) {
     j->reprise_x = 200;
     j->reprise_y = 600;
 }
@@ -384,7 +369,7 @@ mes_caillou[2] = creer_bonus(3800, 200, caillou, NULL) // x=1800, y=200
                 goto FIN_NIVEAU;
             }
 
-           
+
 
             deplacer_groupe(&groupe, fond, screenx, fin_scroll,dragon_speed );
             // Appelle TOUTES les gestions de bonus classiques
