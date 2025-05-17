@@ -447,14 +447,19 @@ void gerer_bonus_colle(BonusPosition bonus[], GrpPersonnages *groupe, int screen
 }
 
 int collision_bonus_pic(BonusPosition *bonus, int perso_x, int perso_y, int perso_w, int perso_h, float screenx) {
-    int marge_collision = 64; // Valeur négative = "il faut vraiment coller le pic"
-
+    int marge_collision = 64;
     int bonus_ecran_x = bonus->x - (int)screenx;
+
+    // Si le bas du perso est au-dessus du haut du pic ⇒ PAS de collision
+    if (perso_y + perso_h < bonus->y)
+        return 0;
 
     int zone_x = bonus_ecran_x + marge_collision;
     int zone_y = bonus->y + marge_collision;
     int zone_largeur = bonus->largeur - 2 * marge_collision;
     int zone_hauteur = bonus->hauteur - 2 * marge_collision;
+
+    if (zone_largeur <= 0 || zone_hauteur <= 0) return 0;
 
     if (perso_x + perso_w > zone_x &&
         perso_x < zone_x + zone_largeur &&
