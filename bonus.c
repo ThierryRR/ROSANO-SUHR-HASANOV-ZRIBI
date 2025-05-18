@@ -266,7 +266,6 @@ void deplacement_position_bonus(BonusPosition *bonus, float *vitesse_y, float gr
             }
         }
     }
-
     // si pas de collision, on déplace, sinon on stoppe
     if (!collision) {
         bonus->y = tentative_y;
@@ -328,44 +327,45 @@ void deplacement_pic(BonusPosition *pic, float *vitesse_y, float gravite_max, fl
 
 void gerer_bonus_colle(BonusPosition bonus[], GrpPersonnages *groupe, int screenx) {
     static int ancienne_touche_space = 0;
-
+    static int temps_dernier_espace = -100; // éviter un double clic au début
+    static int frame_actuelle = 0;
+    frame_actuelle++;
     for (int b = 0; b < NB_BONUS; b++) {
         for (int i = 0; i < groupe->nb_personnages; i++) {
             if (collision_bonus(&bonus[b],
                                 groupe->persos[i].x, groupe->persos[i].y,
                                 groupe->persos[i].largeur, groupe->persos[i].hauteur,
                                 screenx)) {
-                groupe->persos[i].timer_colle = 300;  // effet colle 5s
-                groupe->persos[i].x_colle = groupe->persos[i].x;  // position figée
-                groupe->persos[i].compteur_espace_colle = 0;      // reset compteur
+                groupe->persos[i].timer_colle = 300;  // colle pendant 5 secondes
+                groupe->persos[i].x_colle = groupe->persos[i].x;
+                groupe->persos[i].compteur_espace_colle = 0;
                 bonus[b].actif = 0;
                 break;
                                 }
         }
     }
-
     int touche_space = key[KEY_SPACE];
-
     for (int i = 0; i < groupe->nb_personnages; i++) {
         Personnage *p = &groupe->persos[i];
 
         if (p->timer_colle > 0) {
-            // détection front montant (appui unique sur Espace)
+            // Détection de double appui rapide sur ESPACE
             if (touche_space && !ancienne_touche_space) {
-                p->compteur_espace_colle++;
-                if (p->compteur_espace_colle >= 6) {
-                    p->timer_colle = 0;  // effet colle désactivé
+                int intervalle = frame_actuelle - temps_dernier_espace;
+
+                if (intervalle > 2 && intervalle < 20) { // entre 2 et 20 frames
+                    p->timer_colle = 0; // décolle immédiatement
                     p->compteur_espace_colle = 0;
                 }
+                temps_dernier_espace = frame_actuelle;
             }
-
-            // timer de colle qui descend naturellement
-            p->timer_colle--;
+            p->timer_colle--;// décrémente le timer
         }
     }
-
     ancienne_touche_space = touche_space;
 }
+
+
 int collision_bonus_pic(BonusPosition *bonus, int perso_x, int perso_y, int perso_w, int perso_h, float screenx) {
     if (!bonus->actif) return 0; // si le bonus est déjà pris on sort
 
