@@ -148,6 +148,7 @@ int sauvegarder_joueur(Joueur *j) {
             while (1) {
                 poll_keyboard();
                 if (key[KEY_TAB]) {
+                    clear_keybuf();
                     show_mouse(NULL);
                     destroy_bitmap(buffer);
                     destroy_bitmap(fond);
@@ -203,7 +204,7 @@ int sauvegarder_joueur(Joueur *j) {
                                 }
                             }
                             fclose(pfw);
-
+                            show_mouse(screen);
                             destroy_bitmap(buffer);
                             destroy_bitmap(fond);
                             clear_keybuf();
