@@ -14,5 +14,7 @@ add_executable(projetbadland  main.c
         jeu.c
         utilitaire.c
         menu.c
-        jeu.h)
+        jeu.h
+        "joueur .c"
+        joueur.h)
 target_link_libraries(projetbadland -lmingw32 -lalleg44)

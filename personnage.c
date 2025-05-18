@@ -77,28 +77,6 @@ int collision_personnage(Personnage* p, BITMAP* fond, float screenx) {
     return 0;
 }
 
-int collision_personnage2(Personnage* p, BITMAP* fond, float screenx) {
-    int largeur = p->sprites[0]->w;
-    int hauteur = p->sprites[0]->h;
-    float offset_x = screenx;
-    if ((int)screenx >= fond->w - SCREEN_W) {
-        offset_x = fond->w - SCREEN_W;
-    }
-    for (int dx = 0; dx < largeur; dx++) {
-        for (int dy = 1; dy < hauteur - 3; dy++) {
-            int px = (int)(p->x + dx + offset_x);
-            int py = p->y + dy;
-            if (px >= 0 && px < fond->w && py >= 0 && py < fond->h) {
-                int couleur = getpixel(fond, px, py);
-                if (getr(couleur) == 255 && getg(couleur) == 255 && getb(couleur) == 255) {
-                    return 1;
-                }
-            }
-        }
-    }
-    return 0;
-}
-
 
 int saut_possible(Personnage* p, BITMAP* fond, float screenx) {
     int old_y = p->y;
@@ -261,46 +239,29 @@ bool collision_pic(Personnage* p, BITMAP* fond, float screenx) {
     }
     return false;
 }
-
 void gerer_collision_pics_groupe(GrpPersonnages *groupe, BITMAP *fond, float screenx) {
     for (int i = 0; i < groupe->nb_personnages; i++) {
         Personnage *p = &(groupe->persos[i]);
-
+        if (p->timer_pic > 0) continue;
         float offset_x = screenx;
         if ((int)screenx >= fond->w - SCREEN_W) {
             offset_x = fond->w - SCREEN_W;
         }
 
-        bool touche_pic = false;
         for (int dx = 0; dx < p->largeur; dx++) {
             for (int dy = 0; dy < p->hauteur; dy++) {
                 int px = (int)(p->x + dx + offset_x);
                 int py = p->y + dy;
+
                 if (px >= 0 && px < fond->w && py >= 0 && py < fond->h) {
                     int couleur = getpixel(fond, px, py);
                     if (couleur == makecol(104, 0, 0)) {
-                        touche_pic = true;
-                        break;
+
+                        p->x = -p->largeur;
+                        return;
                     }
                 }
             }
-            if (touche_pic) break;
         }
-
-        if (touche_pic) {
-            printf("TOUCHE PIC timer_pic = %d\n", p->timer_pic);
-            if (p->timer_pic > 0) {
-                p->x -= 1;
-                p->vy = 0;
-            } else {
-                printf("PERSONNAGE MORT SUR PIC\n");
-                for (int j = i; j < groupe->nb_personnages - 1; j++) {
-                    groupe->persos[j] = groupe->persos[j + 1];
-                }
-                groupe->nb_personnages--;
-                i--;
-            }
-        }
-
     }
 }

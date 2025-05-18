@@ -6,7 +6,7 @@
 #include "boolean.h"
 #include "scroll.h"
 #include "bonus.h"
-
+#include "joueur.h"
 void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {//fonction qui gère la logique du niveau1
     //initialisation des bitmaps
     BITMAP *fond = copier_bitmap(fond_final);
@@ -100,7 +100,7 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {//fonction qui gère la logiqu
             for (int i = 0; i < groupe.nb_personnages; i++) {
                 int pos_abs = (int)screenx + groupe.persos[i].x;
                 if (pos_abs >= fond->w) {
-                    int choix = ecran_victoireniv1();//affichage de l'ecran de victoire
+                    int choix = ecran_victoire();//affichage de l'ecran de victoire
                     if (choix == 1) {//passse au niveau suivant
                         j->niveau = 2;
                         sauvegarder_joueur(j);
@@ -148,7 +148,7 @@ FIN_NIVEAU:
     remove_int(temps_init);
     rest(200);
     if (game_over) {
-        int choix = ecran_victoireniv1();
+        int choix = ecran_victoire();
         if (choix == 1) {
             j->niveau = 2;
             j->reprise_x = 300;
@@ -317,7 +317,7 @@ mes_caillou[2] = creer_bonus(3800, 200, caillou, NULL) // x=1800, y=200
 
             Joueur *demo = malloc(sizeof(Joueur));
             sprintf(demo->nom, "DEMO%d", compteur_demo++);
-            demo->niveau = 1;
+            demo->niveau = 2;
             demo->reprise_x = 4000;
             demo->reprise_y = 600;
 
@@ -359,15 +359,16 @@ mes_caillou[2] = creer_bonus(3800, 200, caillou, NULL) // x=1800, y=200
             }
 
             if (tous_passes) {
-                int choix = ecran_victoireniv1();
+                int choix = ecran_victoire();
+                remove_int(temps_init);
                 if (choix == 1) {
                     j->niveau = 3;
                     sauvegarder_joueur(j);
-                    jeu_niveau_3(fond,j);
+                   scrollingNiv3(j);
                 } else {
                     ecran_menu();
                 }
-                goto FIN_NIVEAU;
+                return;
             }
 
 
@@ -435,7 +436,7 @@ FIN_NIVEAU:
     remove_int(temps_init);
     rest(200);
     if (game_over) {
-        int choix = ecran_defaiteniv1();
+        int choix = ecran_defaite();
 
         if (choix == 1) {
             j->niveau = 2;
@@ -451,6 +452,7 @@ FIN_NIVEAU:
             sauvegarder_joueur(j);
         }
     }
+
 
 FIN_JEU:
     destroy_bitmap(page);
@@ -485,38 +487,36 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
     }
 
     BonusPosition mon_bonus4[NB_BONUS] = {
-        creer_bonus(6500, 880, malusvitesse, NULL),
-        creer_bonus(1860, 270, malusvitesse, NULL)
+        creer_bonus(6700, 680, malusvitesse, NULL),
+        creer_bonus(4800, 500, malusvitesse, NULL)
     };
 
     BonusPosition mon_bonus5[NB_BONUS] = {//TUE PAS
-        creer_bonus(10500, 700, bonuscomportement, NULL),
+        creer_bonus(1980, 300, bonuscomportement, NULL),
         creer_bonus(8800, 600, bonuscomportement, NULL),
         creer_bonus(4120, 450, bonuscomportement, NULL)
     };
 
     BonusPosition mon_bonus6[NB_BONUS] = {
-        creer_bonus(8500, 500, bonuscomport, NULL),
+        creer_bonus(8500, 400, bonuscomport, NULL),
         creer_bonus(3401, 300, bonuscomport, NULL)
     };
 
     BonusPosition bonust[NB_BONUS] = {
-        creer_bonus(2040, 470, bonustaille, NULL),
+        creer_bonus(4040, 270, bonustaille, NULL),
         creer_bonus(12300, 580, bonustaille, NULL)
     };
 
-
-
     BonusPosition mes_caillou[NB_PICS] = {
         creer_bonus(550, 200, caillou, NULL),
-        creer_bonus(1900, 230, caillou, NULL),
+        creer_bonus(4700, 30, caillou, NULL),
         creer_bonus(9000, 200, caillou, NULL)
     };
 
     GrpPersonnages groupe;
     groupe.nb_personnages = 1;
 
-    if (j->niveau == 3 && j->reprise_x == 200) {  // si héritée de niv2
+    if (j->niveau == 3 && j->reprise_x == 5300 ) {  // si héritée de niv2
         j->reprise_x = 200;
         j->reprise_y = 700;
         sauvegarder_joueur(j);
@@ -528,7 +528,7 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
     if (screenx > fond->w - SCREEN_W) screenx = fond->w - SCREEN_W;
     int perso_x = j->reprise_x - (int)screenx;
 
-    float vitesses_y_pics[NB_PICS] = {0};
+
     float vitesses_y_cailloux[NB_PICS] = {0};
 
     creation_personnage(&groupe.persos[0], perso_x, j->reprise_y, 64, 64);
@@ -576,7 +576,35 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
             allegro_exit();
             exit(0);
         }
+        if (key[KEY_B]) {
+            clear_keybuf();
+            show_mouse(NULL);
+            affichage_ecran_dacceuil();
+            clear_keybuf();
+            destroy_bitmap(page);
+            destroy_bitmap(fond);
+            remove_int(temps_init);
+            ecran_menu();
 
+            return;
+        }
+        static int compteur_demo=1;
+        if (key[KEY_1]) {
+
+
+            Joueur *demo = malloc(sizeof(Joueur));
+            sprintf(demo->nom, "DEMO%d", compteur_demo++);
+            demo->niveau = 3;
+            demo->reprise_x = 10000;
+            demo->reprise_y = 800;
+
+            clear_keybuf();
+            scrollingNiv3(demo);
+
+            free(demo);
+            show_mouse(screen);
+            continue;
+        }
         while (temps > 0) {
             poll_keyboard();
             int space = key[KEY_SPACE];
@@ -588,11 +616,13 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
             for (int i = 0; i < groupe.nb_personnages; i++) {
                 int pos_abs = (int)screenx + groupe.persos[i].x;
                 if (pos_abs >= fond->w) {
-                    int choix = ecran_victoireniv1();
+                    int choix = ecran_victoire();
                     if (choix == 1) {
-                        j->niveau = 3;
+                        j->niveau = 1;
+                        j->reprise_x = 500;
+                        j->reprise_y = 800;
                         sauvegarder_joueur(j);
-                        scrollingNiv3(j);
+                        scrollingNiv1(j);
                     } else {
                         ecran_menu();
                     }
@@ -602,18 +632,18 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
 
             deplacer_groupe(&groupe, fond, screenx, fin_scroll, dragon_speed);
 
+            gerer_collision_pics_groupe(&groupe, fond, screenx);
 
+            gerer_malus_vitesse(mon_bonus4, &groupe, screenx, &dragon_malus_timer);
+            gerer_taille_grand(bonust, &groupe, screenx, &timer_bonus_taille);
+            gerer_bonus_colle(mon_bonus6, &groupe, screenx);
+            gerer_bonus_immunite_pic(mon_bonus5, &groupe, screenx);
 
             for (int i = 0; i < NB_PICS; i++) {
                 deplacement_pic(&mes_caillou[i], &vitesses_y_cailloux[i], gravite_max, acceleration, fond, screenx, &groupe);
 
             }
 
-            gerer_malus_vitesse(mon_bonus4, &groupe, screenx, &dragon_malus_timer);
-            gerer_taille_grand(bonust, &groupe, screenx, &timer_bonus_taille);
-            gerer_bonus_colle(mon_bonus6, &groupe, screenx);
-            gerer_bonus_immunite_pic(mon_bonus5, &groupe, screenx);
-            gerer_collision_pics_groupe(&groupe, fond, screenx);
 
             gerer_collision_pics_dynamiques(&groupe, mes_caillou, screenx);
 
@@ -654,7 +684,7 @@ FIN_NIVEAU:
     remove_int(temps_init);
     rest(200);
     if (game_over) {
-        int choix = ecran_defaiteniv1();
+        int choix = ecran_defaite();
         if (choix == 1) jeu_niveau_3(fond, j);
         else if (choix == 2) ecran_menu();
     } else if (!key[KEY_ESC]) {
