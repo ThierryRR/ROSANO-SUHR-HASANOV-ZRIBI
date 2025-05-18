@@ -16,5 +16,7 @@ add_executable(projetbadland  main.c
         menu.c
         jeu.h
         "joueur .c"
-        joueur.h)
+        joueur.h
+        "chekpoint .h"
+        checkpoint.c)
 target_link_libraries(projetbadland -lmingw32 -lalleg44)

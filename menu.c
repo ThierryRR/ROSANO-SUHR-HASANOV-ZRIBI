@@ -119,7 +119,7 @@ void ecran_menu() {//fonction du lenu principal du jeu
 
         // clic gauche de la souris permet de gerer les touches
         if (mouse_b & 1) {printf("clic %d clic%d",mouse_x,mouse_y);
-           if ((mouse_x >= 480) && (mouse_x <= 1440) && (mouse_y >= 400) && (mouse_y <= 580)) {//zone nouveau joueur
+           if ((mouse_x >= 305) && (mouse_x <= 1611) && (mouse_y >= 646) && (mouse_y <= 778)) {//zone nouveau joueur
                 Joueur *temp = nouveau_joueur(screen);
                 if (temp != NULL) {
                     destroy_bitmap(buffer);
@@ -135,7 +135,7 @@ void ecran_menu() {//fonction du lenu principal du jeu
             }
 
 // zone chargement joueur
-            if ((mouse_x >= 237) && (mouse_x <= 1681) && (mouse_y >= 614) && (mouse_y <= 794)) {
+             if ((mouse_x >= 236) && (mouse_x <= 1676) && (mouse_y >= 817) && (mouse_y <= 942 )) {
 
                 j = chargement_du_joueur(screen);//chargement du fichier texte
                 if (j != NULL) {
