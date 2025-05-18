@@ -13,4 +13,3 @@ ssss 1 500 800
 sssssssss 1 75 300
 rr 1 75 300
 sss 1 75 300
-ddd 1 75 300
