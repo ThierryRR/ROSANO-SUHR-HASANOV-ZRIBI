@@ -425,59 +425,46 @@ void gerer_bonus_colle(BonusPosition bonus[], GrpPersonnages *groupe, int screen
 
     ancienne_touche_space = touche_space;
 }
-int collision_bonus_pic(BonusPosition *pic, int x_perso, int y_perso, int largeur_perso, int hauteur_perso, float decallage_scroll) {
-    int x_affiche_pic = pic->x - (int)decallage_scroll;
+int collision_bonus_pic(BonusPosition *bonus, int perso_x, int perso_y, int perso_w, int perso_h, float screenx) {
+    if (!bonus->actif) return 0;
 
-    int marge_x = pic->largeur / 4;
-    int marge_y = pic->hauteur / 3;
+    int marge = bonus->largeur / 5;  // 20% de la largeur en marge
+    if (marge < 5) marge = 5;        // minimum 5px pour éviter de trop réduire
 
-    int zone_x = x_affiche_pic + marge_x;
-    int zone_y = pic->y + marge_y;
-    int zone_largeur = pic->largeur - 2 * marge_x;
-    int zone_hauteur = pic->hauteur - marge_y;
+    int bonus_ecran_x = bonus->x - (int)screenx;
 
-    // Positions de test
-    int haut_pic = zone_y;
-    int bas_pic = zone_y + zone_hauteur;
-    int haut_perso = y_perso;
-    int bas_perso = y_perso + hauteur_perso;
+    int zone_x = bonus_ecran_x + marge;
+    int zone_y = bonus->y + marge;
+    int zone_largeur = bonus->largeur - 2 * marge;
+    int zone_hauteur = bonus->hauteur - 2 * marge;
 
+    if (zone_largeur <= 0 || zone_hauteur <= 0) return 0;
 
-
-    // Test de collision uniquement par le haut
-    bool collision_par_le_haut =
-        bas_perso >= haut_pic &&
-        haut_perso < haut_pic &&
-        x_perso + largeur_perso > zone_x &&
-        x_perso < zone_x + zone_largeur;
-
-    if (collision_par_le_haut) {
-        allegro_message("✅ Collision par le HAUT détectée !");
+    if (perso_x + perso_w > zone_x &&
+        perso_x < zone_x + zone_largeur &&
+        perso_y + perso_h > zone_y &&
+        perso_y < zone_y + zone_hauteur) {
+        bonus->actif = 0;
+        bonus->explosion_timer = 60; // 1 seconde
         return 1;
-    }
+        }
 
     return 0;
 }
-void gerer_collision_pics_dynamiques(GrpPersonnages *groupe, BonusPosition pics[], float decallage_scroll) {
 
+void gerer_collision_pics_dynamiques(GrpPersonnages *groupe, BonusPosition pics[], float decallage_scroll) {
     for (int j = 0; j < NB_PICS; j++) {
         if (!pics[j].actif) continue;
-
         for (int i = 0; i < groupe->nb_personnages; i++) {
             Personnage *p = &groupe->persos[i];
-
             // Ignorer les immunisés
             if (p->timer_pic > 0) continue;
-
             // Test de collision par le haut avec un pic
             if (collision_bonus_pic(&pics[j], p->x, p->y, p->largeur, p->hauteur, decallage_scroll)) {
-                allegro_message(" Tué par pic DYNAMIQUE");
-
                 // Supprimer le personnage du groupe
                 for (int k = i; k < groupe->nb_personnages - 1; k++) {
                     groupe->persos[k] = groupe->persos[k + 1];
                 }
-
                 groupe->nb_personnages--;
                 i--; // Ajuster car on a décalé les indices
                 break;
