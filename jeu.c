@@ -107,7 +107,14 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {//fonction qui gère la logiqu
                         sauvegarder_joueur(j);
                         scrollingNiv2(j);
                     } else {//retour au menu
-                        ecran_menu();
+
+
+                            if (j->niveau < 2) {
+                                j->niveau = 2;
+                                sauvegarder_joueur(j); // <-- AJOUT ici
+                            }
+                            ecran_menu();
+
                     }
                     goto FIN_NIVEAU;
                 }
@@ -733,7 +740,7 @@ void gerer_acceleration(float *dragon_speed, int *dragon_acceleration_timer, int
         *dragon_speed = 7.0;  // vitesse du scroll augmente
         (*dragon_acceleration_timer)--;//decrementation
     } else if (space) {
-        *dragon_speed = 3;  // scroll acceleré quand on appuie sur espace
+        *dragon_speed = 10;  // scroll acceleré quand on appuie sur espace
     } else {
         *dragon_speed = 2;  // vitesse normal du jeu
     }
