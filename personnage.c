@@ -71,6 +71,9 @@ int collision_personnage(Personnage* p, BITMAP* fond, float screenx) {
                 if (getr(couleur) == 0 && getg(couleur) == 0 && getb(couleur) == 0) {
                     return 1; // décor noir → collision
                 }
+                if (getr(couleur) == 104 && getg(couleur) == 0 && getb(couleur) == 0 && p->timer_pic > 0){
+                    return 1;
+                }
             }
         }
     }
