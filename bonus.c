@@ -1,7 +1,7 @@
 #include "bonus.h"
 #include <math.h>
 #include <stdio.h>//
-#include "jeu.h"
+#include "jeuniv1.h"
 #include "bonus.h"
 #include <allegro.h>
 #include <stdio.h>

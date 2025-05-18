@@ -5,7 +5,7 @@
 #ifndef CHEKPOINT_H
 #define CHEKPOINT_H
 #include <allegro.h>
-#include "jeu.h"
+#include "jeuniv1.h"
 typedef struct {
     int x, y; // position du checkpoint
     int largeur, hauteur; // dimensions

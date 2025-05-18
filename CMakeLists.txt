@@ -11,12 +11,18 @@ add_executable(projetbadland  main.c
         personnage.c
         scroll.c
         bonus.c
-        jeu.c
+        jeuniv1.c
         utilitaire.c
         menu.c
-        jeu.h
+        jeuniv1.h
         "joueur .c"
         joueur.h
         "chekpoint .h"
-        checkpoint.c)
+        checkpoint.c
+        pic.c
+        pic.h
+        jeuniv2.c
+        jeuniv2.h
+        jeuniv3.c
+        jeuniv3.h)
 target_link_libraries(projetbadland -lmingw32 -lalleg44)

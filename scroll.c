@@ -1,6 +1,6 @@
 #include <allegro.h>
 #include "menu.h"
-#include "jeu.h"
+#include "jeuniv1.h"
 #include "bonus.h"
 
 

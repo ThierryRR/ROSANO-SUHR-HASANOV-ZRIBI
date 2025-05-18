@@ -8,7 +8,7 @@
 #include <allegro.h>
 #define NB_PICS 3
 #define NB_BONUS 5
-void gerer_acceleration(float *dragon_speed, int *dragon_acceleration_timer, int *dragon_malus_timer ,int space);
+
 void jeu_niveau_1(BITMAP *fond_final, Joueur *j);
 void jeu_niveau_2(BITMAP *fond_final, Joueur *j);//eeeeeee
 void jeu_niveau_3(BITMAP *fond_final, Joueur *j);

@@ -25,7 +25,7 @@ typedef struct {
     int nb_personnages;// nombre actuel dans le groupe
 } GrpPersonnages;
 
-bool collision_pic(Personnage* p, BITMAP* fond, float screenx);// fonction qui teste si un personnage touche un pic
+
 
 void deplacer_groupe(GrpPersonnages *g, BITMAP *fond, float screenx, int fin_scroll, float vitesse);// déplace tout le groupe
 
@@ -34,7 +34,6 @@ void deplacer_personnage(Personnage *p, BITMAP *fond, float screenx, int fin_scr
 void creation_personnage(Personnage *p, int x, int y, int largeur, int hauteur);// initialise un personnage
 void dessiner_personnage(Personnage *p, BITMAP* buffer);// dessine un personnage sur l'écran
 int collision_personnage(Personnage *p, BITMAP* fond, float screenx);// détecte les collisions avec le décor
-void gerer_collision_pics_groupe(GrpPersonnages *groupe, BITMAP *fond, float screenx);// applique les collisions entre les personnages et les pics du décor
 bool groupe_est_mort(GrpPersonnages *groupe);// teste si le groupe est vide (tous morts)
-
+void gerer_acceleration(float *dragon_speed, int *dragon_acceleration_timer, int *dragon_malus_timer ,int space);
 #endif //PERSONNAGE_H

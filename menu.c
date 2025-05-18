@@ -118,7 +118,7 @@ void ecran_menu() {//fonction du lenu principal du jeu
 
 
         // clic gauche de la souris permet de gerer les touches
-        if (mouse_b & 1) {printf("clic %d clic%d",mouse_x,mouse_y);
+        if (mouse_b & 1) {;
            if ((mouse_x >= 305) && (mouse_x <= 1611) && (mouse_y >= 646) && (mouse_y <= 778)) {//zone nouveau joueur
                 Joueur *temp = nouveau_joueur(screen);
                 if (temp != NULL) {
