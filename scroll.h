@@ -1,7 +1,3 @@
-//
-// Created by thier on 15/04/2025.
-//
-
 #ifndef SCROLL_H
 #define SCROLL_H
 
