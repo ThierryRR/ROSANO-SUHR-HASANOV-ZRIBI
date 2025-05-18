@@ -509,7 +509,7 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
 
     BonusPosition mes_caillou[NB_PICS] = {
         creer_bonus(550, 200, caillou, NULL),
-        creer_bonus(4700, 30, caillou, NULL),
+        creer_bonus(4770, 30, caillou, NULL),
         creer_bonus(9000, 200, caillou, NULL)
     };
 
@@ -521,8 +521,8 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
         j->reprise_y = 700;
         sauvegarder_joueur(j);
     }
-
-
+    mes_caillou[1].largeur = (int)(mes_caillou[1].largeur * 0.6);
+    mes_caillou[1].hauteur = (int)(mes_caillou[1].hauteur * 0.6);
     float screenx = j->reprise_x - SCREEN_W / 2;
     if (screenx < 0) screenx = 0;
     if (screenx > fond->w - SCREEN_W) screenx = fond->w - SCREEN_W;
