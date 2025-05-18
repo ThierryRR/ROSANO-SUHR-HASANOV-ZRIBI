@@ -237,14 +237,14 @@ int sauvegarder_joueur(Joueur *j) {
 Joueur *saisir_joueur(BITMAP *screen) {
     BITMAP *buffer = create_bitmap(SCREEN_W, SCREEN_H);
     if (!buffer) {
-        allegro_message("Erreur : crÃ©ation buffer.");
+        allegro_message("erreur");
         return NULL;
     }
 
     BITMAP *fond = load_bitmap("ecran_nom_final.bmp", NULL);
     if (!fond) {
         destroy_bitmap(buffer);
-        allegro_message("Erreur : fond introuvable.");
+        allegro_message("erreur");
         return NULL;
     }
 
@@ -252,7 +252,7 @@ Joueur *saisir_joueur(BITMAP *screen) {
     if (!texte_temp) {
         destroy_bitmap(buffer);
         destroy_bitmap(fond);
-        allegro_message("Erreur : texte temp.");
+        allegro_message("erreur");
         return NULL;
     }
 
@@ -261,7 +261,7 @@ Joueur *saisir_joueur(BITMAP *screen) {
         destroy_bitmap(buffer);
         destroy_bitmap(fond);
         destroy_bitmap(texte_temp);
-        allegro_message("Erreur : joueur malloc.");
+        allegro_message("erreur");
         return NULL;
     }
 
