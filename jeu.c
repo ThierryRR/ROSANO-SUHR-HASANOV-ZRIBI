@@ -73,10 +73,7 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {//fonction qui gère la logiqu
     while (!game_over) {
         poll_keyboard();
 
-        if (key[KEY_ESC]) {//permet de quitter le jeu
-            allegro_exit();
-            exit(0);
-        }
+
         if (key[KEY_B]) {//retour à l'écran dacceuil
             clear_keybuf();
             show_mouse(NULL);
@@ -169,9 +166,9 @@ FIN_NIVEAU:
     if (game_over) {
         int choix = ecran_defaite();// appel de la fonction ecran defaite
         if (choix == 1) {
-            j->niveau = 2;
+            j->niveau = 1;
             sauvegarder_joueur(j);
-            jeu_niveau_2(fond, j);// on relance
+            jeu_niveau_1(fond, j);// on relance
         } else {//sinon retour ecran menu
             ecran_menu();
         }

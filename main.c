@@ -30,6 +30,7 @@ int main() {
 
     // boucle principale du jeu tant que le jeu n'est pas terminé
     while (!game_over) {
+
         affichage_ecran_dacceuil(); // affiche l'écran d'accueil
         if (game_over) break; // si l'utilisateur a quitté depuis l’accueil
 

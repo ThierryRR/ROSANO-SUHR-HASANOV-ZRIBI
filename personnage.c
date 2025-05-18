@@ -257,7 +257,7 @@ void gerer_collision_pics_groupe(GrpPersonnages *groupe, BITMAP *fond, float scr
                         }
                         groupe->nb_personnages--; // décrémenter
                         i--; // reculer l'indice car on a décalé les éléments
-                        goto next_personnage; // sortir proprement des boucles imbriquées
+                        goto next_personnage; // sorti
                     }
                 }
             }

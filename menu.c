@@ -185,12 +185,13 @@ int ecran_victoire() {// fonction qui affiche si le joueur sort de lecran a droi
 
         if (mouse_b & 1) {
         //zone qui amene au niv suivant
-            if ((mouse_x >= 354) && (mouse_x <= 1569) && (mouse_y >= 426) && (mouse_y <= 606)) {
+
+            if ((mouse_x >= 173) && (mouse_x <= 1746) && (mouse_y >= 510) && (mouse_y <= 677)) {
                 destroy_bitmap(image);
                 destroy_bitmap(buffer);
                 rest(300);
                 return 1;//zone qui retoune au menu
-            } else if ((mouse_x >= 352) && (mouse_x <= 1569) && (mouse_y >= 653) && (mouse_y <= 825)) {
+            } else if ((mouse_x >= 175) && (mouse_x <= 1739) && (mouse_y >= 737) && (mouse_y <= 910)) {
                 destroy_bitmap(image);
                 destroy_bitmap(buffer);
                 rest(300);
@@ -229,12 +230,13 @@ int ecran_defaite() {//fonction qui s'active quand on quitte l'ecran par la gauc
         show_mouse(NULL);// remise a null
 
         if (mouse_b & 1) {// zone pour relancer le niveau
-            if ((mouse_x >= 118) && (mouse_x <= 1801) && (mouse_y >= 417) && (mouse_y <= 612)) {
+
+            if ((mouse_x >= 356) && (mouse_x <= 1444) && (mouse_y >= 324) && (mouse_y <= 537 )) {
                 destroy_bitmap(image);
                 destroy_bitmap(buffer);
                 rest(300);
                 return 1;
-            } else if ((mouse_x >= 115) && (mouse_x <=1803) && (mouse_y >= 691) && (mouse_y <= 879)) {// zone retour au menu
+            } else if ((mouse_x >= 318) && (mouse_x <=1473) && (mouse_y >= 602) && (mouse_y <= 808)) {// zone retour au menu
                 destroy_bitmap(image);
                 destroy_bitmap(buffer);
                 rest(300);

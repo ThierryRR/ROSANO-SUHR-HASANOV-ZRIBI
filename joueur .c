@@ -309,15 +309,17 @@ Joueur *saisir_joueur(BITMAP *screen) {
         rest(10); // Petite pause
     }
 
+    clear_keybuf();
+    show_mouse(screen);
+    destroy_bitmap(texte_temp);
     destroy_bitmap(buffer);
     destroy_bitmap(fond);
-    destroy_bitmap(texte_temp);
     return j;
 }
 
 
 Joueur* nouveau_joueur(BITMAP *screen) {// fonction qui initialise un nouveau joueur
-    FILE *pf = fopen("joueur.txt", "r");// lecture du fichier
+    FILE *pf = fopen("joueur.txt", "r");
     if (!pf) {
         allegro_message("erreur");
         return NULL;
@@ -325,14 +327,14 @@ Joueur* nouveau_joueur(BITMAP *screen) {// fonction qui initialise un nouveau jo
 
     int count = 0;
     char ligne[100];
-    while (fgets(ligne, sizeof(ligne), pf)) {
+    while (fgets(ligne, sizeof(ligne), pf)) {// compte les joueurs
         if (ligne[0] != '\0' && ligne[0] != '\n') {
             count++;
         }
     }
     fclose(pf);
-// si il ya plus de 16 joueurs on lance un joueur de test
-    if (count >= 16) {
+
+    if (count >= 16) { // si 16 joueurs, on crée un joueur test
         Joueur *temp = malloc(sizeof(Joueur));
         if (!temp) return NULL;
         strcpy(temp->nom, "DEMO");
@@ -344,41 +346,64 @@ Joueur* nouveau_joueur(BITMAP *screen) {// fonction qui initialise un nouveau jo
         if (res == 0) return NULL;
     }
 
-    while (1) {// bouche pour saisier et verifier nom existant
+    while (1) { // boucle jusqu'à obtenir un nom valide
         clear_keybuf();
-        Joueur *j = saisir_joueur(screen);// appel de la fonction de saisie du pseudo
+        Joueur *j = saisir_joueur(screen); // entrée du nom
         if (j == NULL) {
             clear_keybuf();
-            return NULL;  // retour au menu si vide
+            return NULL;  // retour menu
         }
 
-        if (recherche_dans_fichier(j)) {// appel de la fonction pour verifier si il existe deja un joueur avec un meme nom
-            clear_to_color(screen, makecol(0, 0, 0));
-            rectfill(screen, SCREEN_W / 2 - 120, 240, SCREEN_W / 2 + 120, 270, makecol(255, 255, 255));
-            char msg[100];
-            sprintf(msg, "Le pseudo %s existe déjà", j->nom);// si il ya affichage du nom
-            textout_centre_ex(screen, font, msg, SCREEN_W / 2, 250, makecol(0, 0, 0), -1);
-            rest(1500);
+        if (recherche_dans_fichier(j)) {// si pseudo déjà utilisé
+            BITMAP *fond = load_bitmap("ecran_nom_final.bmp", NULL);
+            BITMAP *texte_temp = create_bitmap(850, 60);
+            if (fond && texte_temp) {
+                draw_sprite(screen, fond, 0, 0);
+                clear_to_color(texte_temp, makecol(255, 0, 255));
+                char msg[100];
+                sprintf(msg, "Le pseudo %s existe déjà", j->nom);
+                textout_centre_ex(texte_temp, font, msg, texte_temp->w / 2, 20, makecol(0, 0, 0), -1);
+                stretch_sprite(screen, texte_temp, 450, 500, 850, 200);
+
+                show_mouse(screen);
+                rest(1500);
+
+                destroy_bitmap(texte_temp);
+                destroy_bitmap(fond);
+            }
             free(j);
             continue;
         }
-// on enregistre le joueur
-        int statut = sauvegarder_joueur(j);
+
+        int statut = sauvegarder_joueur(j); // sauvegarde
         if (statut == 0) {
             free(j);
             return NULL;
         }
-// affihcage du nom
-        clear_to_color(screen, makecol(0, 0, 0));
-        char message2[100];
-        sprintf(message2, "Bienvenue %s !!", j->nom);
-        rectfill(screen, SCREEN_W / 2 - 100, 240, SCREEN_W / 2 + 100, 270, makecol(255, 255, 255));
-        textout_centre_ex(screen, font, message2, SCREEN_W / 2, 250, makecol(0, 0, 0), -1);
-        rest(1500);
 
-        return j;
+        // message de bienvenue dans le bandeau
+        BITMAP *fond = load_bitmap("ecran_nom_final.bmp", NULL);
+        BITMAP *texte_temp = create_bitmap(850, 60);
+        if (fond && texte_temp) {
+            draw_sprite(screen, fond, 0, 0);
+            clear_to_color(texte_temp, makecol(255, 0, 255));
+            char msg[100];
+            sprintf(msg, "Bienvenue %s !!", j->nom);
+            textout_centre_ex(texte_temp, font, msg, texte_temp->w / 2, 20, makecol(0, 0, 0), -1);
+            stretch_sprite(screen, texte_temp, 450, 500, 850, 200);
+
+            show_mouse(screen);
+            rest(1500);
+
+            destroy_bitmap(texte_temp);
+            destroy_bitmap(fond);
+        }
+
+        return j; // joueur prêt à jouer
     }
 }
+
+
 int recherche_dans_fichier(Joueur *j) {// fonction qui cherche si nom est deja exitant
     FILE *pf = fopen("joueur.txt", "r");// lecture du fichier
     if (pf == NULL) {
