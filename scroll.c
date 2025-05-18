@@ -5,26 +5,26 @@
 
 
 BITMAP* fusion(BITMAP** images, int nb_images) {
-    if (images == NULL || nb_images == 0) { // Vérifie que les images soit utilisables
-        allegro_message("erreurdddd");
+    if (images == NULL || nb_images == 0) { // vérifie que les images soit utilisables
+        allegro_message("erreur");
         exit(1);
     }
     int largeur_totale = 0;
     int hauteur = images[0]->h;
     for (int i = 0; i < nb_images; i++) {
-        if (images[i] == NULL) { // Vérifie pour chaque image qu'elle soit utilisable
-            allegro_message("erreuraaaa");
+        if (images[i] == NULL) { // vérifie pour chaque image qu'elle soit utilisable
+            allegro_message("erreur");
             exit(1);
         }
-        if (images[i]->h != hauteur) { // Vérifie qu'elles aient la mm hauteur
-            allegro_message("erreurcccc.");
+        if (images[i]->h != hauteur) { // vérifie qu'elles aient la mm hauteur
+            allegro_message("erreur.");
             exit(1);
         }
           largeur_totale += images[i]->w - 5;
     }
-    BITMAP* resultat = create_bitmap(largeur_totale, hauteur); // Crée le bitmap
+    BITMAP* resultat = create_bitmap(largeur_totale, hauteur); // crée le bitmap
     if (resultat == NULL) {
-        allegro_message("erreurbbb");
+        allegro_message("erreur");
         exit(1);
     }
     int x = 0;
@@ -32,10 +32,10 @@ BITMAP* fusion(BITMAP** images, int nb_images) {
         blit(images[i], resultat, 0, 0, x, 0, images[i]->w, hauteur);
         x += images[i]->w-5;
     }
-    return resultat; // Retourne le fond
+    return resultat; // retourne le fond
 }
 void scrollingNiv1(Joueur* j) {
-    const char* noms_fichiers[] = { // Fichiers BMP du 1er niveau
+    const char* noms_fichiers[] = { // fichiers BMP du 1er niveau
         "niveau1_0.bmp",
         "niveau1_1.bmp",
         "niveau1_2.bmp" ,
@@ -45,7 +45,7 @@ void scrollingNiv1(Joueur* j) {
     const int nb_fonds = sizeof(noms_fichiers) / sizeof(noms_fichiers[0]);
     BITMAP* mes_fonds[nb_fonds];
     for (int i = 0; i < nb_fonds; i++) {
-        mes_fonds[i] = load_bitmap(noms_fichiers[i], NULL); // Chargement des BITMAPS
+        mes_fonds[i] = load_bitmap(noms_fichiers[i], NULL); // chargement des BITMAPS
         if (mes_fonds[i] == NULL) {
             for (int j = 0; j < i; j++) {
                 destroy_bitmap(mes_fonds[j]);
@@ -59,7 +59,7 @@ void scrollingNiv1(Joueur* j) {
         destroy_bitmap(mes_fonds[i]);
     }
 }
-BITMAP* copier_bitmap(BITMAP* src) { // Copie d'un BITMAP
+BITMAP* copier_bitmap(BITMAP* src) { // copie d'un BITMAP
     if (!src) return NULL;
     BITMAP* copie = create_bitmap(src->w, src->h);
     if (!copie) return NULL;
@@ -68,7 +68,7 @@ BITMAP* copier_bitmap(BITMAP* src) { // Copie d'un BITMAP
 }
 
 void scrollingNiv2(Joueur *j) {
-    const char* noms_fichiers[] = { // Toutes les images du 2ème niveau
+    const char* noms_fichiers[] = { // toutes les images du 2ème niveau
         "niveau2_0.bmp",
         "niveau2_1.bmp",
         "niveau2_2.bmp",
@@ -81,22 +81,22 @@ void scrollingNiv2(Joueur *j) {
     const int nb_fonds = sizeof(noms_fichiers) / sizeof(noms_fichiers[0]);
     BITMAP* mes_fonds[nb_fonds];
     for (int i = 0; i < nb_fonds; i++) {
-        mes_fonds[i] = load_bitmap(noms_fichiers[i], NULL); // Charge les BMP
+        mes_fonds[i] = load_bitmap(noms_fichiers[i], NULL); // charge les BMP
         if (mes_fonds[i] == NULL) {
             for (int j = 0; j < i; j++) {
-                destroy_bitmap(mes_fonds[j]); // Détruit en cas d'erreur
+                destroy_bitmap(mes_fonds[j]); // détruit en cas d'erreur
             }
             exit(1);
         }
     }
     BITMAP* fond_final = fusion(mes_fonds, nb_fonds);
-    jeu_niveau_2(fond_final,j); // Lance le niveau 2
+    jeu_niveau_2(fond_final,j); // lance le niveau 2
     for (int i = 0; i < nb_fonds; i++) {
         destroy_bitmap(mes_fonds[i]);
     }
 }
 void scrollingNiv3(Joueur *j) {
-    const char* noms_fichiers[] = { // Toutes les images du 3ème niveau
+    const char* noms_fichiers[] = { // toutes les images du 3ème niveau
         "niveau3_0.bmp",
         "niveau3_1.bmp",
         "niveau3_2.bmp",
@@ -110,7 +110,7 @@ void scrollingNiv3(Joueur *j) {
     const int nb_fonds = sizeof(noms_fichiers) / sizeof(noms_fichiers[0]);
     BITMAP* mes_fonds[nb_fonds];
     for (int i = 0; i < nb_fonds; i++) {
-        mes_fonds[i] = load_bitmap(noms_fichiers[i], NULL); // Charge les BITMAPS
+        mes_fonds[i] = load_bitmap(noms_fichiers[i], NULL); // charge les BITMAPS
         if (mes_fonds[i] == NULL) {
             for (int j = 0; j < i; j++) {
                 destroy_bitmap(mes_fonds[j]);
@@ -119,7 +119,7 @@ void scrollingNiv3(Joueur *j) {
         }
     }
     BITMAP* fond_final = fusion(mes_fonds, nb_fonds);
-    jeu_niveau_3(fond_final,j); // Lance le niveau 3
+    jeu_niveau_3(fond_final,j); // lance le niveau 3
     for (int i = 0; i < nb_fonds; i++) {
         destroy_bitmap(mes_fonds[i]);
     }

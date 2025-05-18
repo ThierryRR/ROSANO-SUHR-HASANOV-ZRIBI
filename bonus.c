@@ -426,48 +426,47 @@ void gerer_bonus_colle(BonusPosition bonus[], GrpPersonnages *groupe, int screen
     ancienne_touche_space = touche_space;
 }
 int collision_bonus_pic(BonusPosition *bonus, int perso_x, int perso_y, int perso_w, int perso_h, float screenx) {
-    if (!bonus->actif) return 0;
+    if (!bonus->actif) return 0; // si le bonus est déjà pris on sort
 
-    int marge = bonus->largeur / 5;  // 20% de la largeur en marge
-    if (marge < 5) marge = 5;        // minimum 5px pour éviter de trop réduire
+    int marge = bonus->largeur / 5; // marge de 20%
+    if (marge < 5) marge = 5; // minimum de 5 pixels
 
-    int bonus_ecran_x = bonus->x - (int)screenx;
+    int bonus_ecran_x = bonus->x - (int)screenx; // position du bonus à l'écran
 
-    int zone_x = bonus_ecran_x + marge;
-    int zone_y = bonus->y + marge;
-    int zone_largeur = bonus->largeur - 2 * marge;
-    int zone_hauteur = bonus->hauteur - 2 * marge;
+    int zone_x = bonus_ecran_x + marge; // zone x réduite
+    int zone_y = bonus->y + marge; // zone y réduite
+    int zone_largeur = bonus->largeur - 2 * marge; // largeur utile
+    int zone_hauteur = bonus->hauteur - 2 * marge; // hauteur utile
 
-    if (zone_largeur <= 0 || zone_hauteur <= 0) return 0;
+    if (zone_largeur <= 0 || zone_hauteur <= 0) return 0; // si zone trop petite on sort
 
-    if (perso_x + perso_w > zone_x &&
+    if (perso_x + perso_w > zone_x && // collision en x
         perso_x < zone_x + zone_largeur &&
-        perso_y + perso_h > zone_y &&
+        perso_y + perso_h > zone_y && // collision en y
         perso_y < zone_y + zone_hauteur) {
-        bonus->actif = 0;
-        bonus->explosion_timer = 60; // 1 seconde
-        return 1;
+        bonus->actif = 0; // désactive le bonus
+        bonus->explosion_timer = 60; // déclenche explosion
+        return 1; // collision détectée
         }
 
-    return 0;
+    return 0; // pas de collision
 }
 
 void gerer_collision_pics_dynamiques(GrpPersonnages *groupe, BonusPosition pics[], float decallage_scroll) {
     for (int j = 0; j < NB_PICS; j++) {
-        if (!pics[j].actif) continue;
+        if (!pics[j].actif) continue; // si le pic est inactif on passe
         for (int i = 0; i < groupe->nb_personnages; i++) {
             Personnage *p = &groupe->persos[i];
-            // Ignorer les immunisés
-            if (p->timer_pic > 0) continue;
-            // Test de collision par le haut avec un pic
+            if (p->timer_pic > 0) continue; // si immunisé on passe
             if (collision_bonus_pic(&pics[j], p->x, p->y, p->largeur, p->hauteur, decallage_scroll)) {
-                // Supprimer le personnage du groupe
+                // collision détectée par le haut
+                // supprime le personnage touché
                 for (int k = i; k < groupe->nb_personnages - 1; k++) {
                     groupe->persos[k] = groupe->persos[k + 1];
                 }
-                groupe->nb_personnages--;
-                i--; // Ajuster car on a décalé les indices
-                break;
+                groupe->nb_personnages--; // on réduit le nombre total
+                i--; // on ajuste l'indice
+                break; // on arrête la boucle pour ce pic
             }
         }
     }
