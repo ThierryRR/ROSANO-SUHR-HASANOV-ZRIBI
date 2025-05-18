@@ -26,7 +26,7 @@ Joueur* chargement_du_joueur(BITMAP* screen) {// fonction de chargement d'un jou
         return NULL;
     }
 
-    BITMAP *fond = load_bitmap("fond.bmp", NULL);// creation et verification de l'image
+    BITMAP *fond = load_bitmap("dragon_centre.bmp", NULL);// creation et verification de l'image
     if (!fond) {
         allegro_message("erreur");
         destroy_bitmap(buffer);
@@ -132,7 +132,7 @@ int sauvegarder_joueur(Joueur *j) {
     if (!modifie) {
         if (nb_joueurs >= 16) {// interface pour supprimer un joueur si la limite est atteinte
             BITMAP *buffer = create_bitmap(SCREEN_W, SCREEN_H);
-            BITMAP *fond = load_bitmap("fond.bmp", NULL);
+            BITMAP *fond = load_bitmap("dragon_centre.bmp", NULL);
             if (!buffer || !fond) {
                 if (buffer) destroy_bitmap(buffer);
                 if (fond) destroy_bitmap(fond);
@@ -233,38 +233,58 @@ int sauvegarder_joueur(Joueur *j) {
     fclose(pf);
     return 1;// retoune le fichier fini
 }
-Joueur *saisir_joueur(BITMAP *screen) {// saisie dun nouveau joueur
-    BITMAP *buffer = create_bitmap(SCREEN_W, SCREEN_H);// creation du buffer et verification
+Joueur *saisir_joueur(BITMAP *screen) {
+    BITMAP *buffer = create_bitmap(SCREEN_W, SCREEN_H);
     if (!buffer) {
-        allegro_message("erreur");
+        allegro_message("Erreur : crÃ©ation buffer.");
         return NULL;
     }
-    Joueur *j = malloc(sizeof(Joueur));// initialisation du  joueur
+
+    BITMAP *fond = load_bitmap("ecran_nom_final.bmp", NULL);
+    if (!fond) {
+        destroy_bitmap(buffer);
+        allegro_message("Erreur : fond introuvable.");
+        return NULL;
+    }
+
+    BITMAP *texte_temp = create_bitmap(850, 60); // Buffer pour les dimensions du bandeau
+    if (!texte_temp) {
+        destroy_bitmap(buffer);
+        destroy_bitmap(fond);
+        allegro_message("Erreur : texte temp.");
+        return NULL;
+    }
+
+    Joueur *j = malloc(sizeof(Joueur));
     if (!j) {
         destroy_bitmap(buffer);
-        allegro_message("erreur");
+        destroy_bitmap(fond);
+        destroy_bitmap(texte_temp);
+        allegro_message("Erreur : joueur malloc.");
         return NULL;
     }
-// parametre du joueur
+
     int i = 0;
     int touche = 1;
-    j->niveau = 1;// niv 1
-    j->nom[0] = '\0';// nom vide
-    // coordonnes sur x et y
+    j->niveau = 1;
+    j->nom[0] = '\0';
     j->reprise_x = 75;
     j->reprise_y = 300;
 
-    while (!key[KEY_ENTER]) {// tant quon appuie sur entre pour lancer une partie
+    while (!key[KEY_ENTER]) {
         poll_keyboard();
-        if (key[KEY_SPACE]) {// retour a ecran menu
-            show_mouse( NULL);
+        // Si l'utilisateur appuie sur ESPACE, on quitte et on revient au menu
+        if (key[KEY_SPACE]) {
+            show_mouse(NULL);
             destroy_bitmap(buffer);
+            destroy_bitmap(fond);
+            destroy_bitmap(texte_temp);
             free(j);
             clear_keybuf();
             return NULL;
         }
 
-        if (keypressed() && touche) {// entre de texte
+        if (keypressed() && touche) {
             int k = readkey();
             char c = k & 0xFF;
             k = k >> 8;
@@ -279,19 +299,23 @@ Joueur *saisir_joueur(BITMAP *screen) {// saisie dun nouveau joueur
         }
 
         if (!keypressed()) touche = 1;
-// affichage du pseudo
-        rectfill(buffer, 0, 0, SCREEN_W, SCREEN_H, makecol(0, 0, 0));
-        textout_centre_ex(buffer, font, "Entrez votre pseudo :", SCREEN_W / 2, 200, makecol(255, 255, 255), -1);
-        rectfill(buffer, SCREEN_W / 2 - 100, 240, SCREEN_W / 2 + 100, 270, makecol(255, 255, 255));
-        textout_centre_ex(buffer, font, j->nom, SCREEN_W / 2, 250, makecol(0, 0, 0), -1);
+
+        draw_sprite(buffer, fond, 0, 0);
+        clear_to_color(texte_temp, makecol(255, 0, 255)); // couleur transparente
+        textout_centre_ex(texte_temp, font, j->nom, texte_temp->w / 2, 20, makecol(0, 0, 0), -1);
+        stretch_sprite(buffer, texte_temp, 450, 500, 850, 200);
         blit(buffer, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         show_mouse(buffer);
-        rest(10);
+        rest(10); // Petite pause
     }
 
-    destroy_bitmap(buffer);// liberation de la mémoire
+    destroy_bitmap(buffer);
+    destroy_bitmap(fond);
+    destroy_bitmap(texte_temp);
     return j;
 }
+
+
 Joueur* nouveau_joueur(BITMAP *screen) {// fonction qui initialise un nouveau joueur
     FILE *pf = fopen("joueur.txt", "r");// lecture du fichier
     if (!pf) {

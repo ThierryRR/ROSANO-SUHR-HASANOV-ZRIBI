@@ -120,7 +120,7 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {//fonction qui gère la logiqu
                 sprintf(demo->nom, "DEMO%d", compteur_demo++);
                 demo->niveau = 1;
                 demo->reprise_x = 3300;
-                demo->reprise_y = 300;
+                demo->reprise_y = 600;
 
                 clear_keybuf();
                 scrollingNiv1(demo);
@@ -157,21 +157,19 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {//fonction qui gère la logiqu
 FIN_NIVEAU:
     remove_int(temps_init);
     rest(200);
-    if (game_over) {//affichage écran victoire.défaite et recuperation du choix du joueur
-        int choix = ecran_victoire();
-        if (choix == 1) { //passage au niveau 2
+
+    // gestion de l'écran de défaite
+    if (game_over) {
+        int choix = ecran_defaite();// appel de la fonction ecran defaite
+        if (choix == 1) {
             j->niveau = 2;
-            j->reprise_x = 300;
-            j->reprise_y = 500;
             sauvegarder_joueur(j);
-            jeu_niveau_2(fond, j);
-        } else {//retourne au menu principal
+            jeu_niveau_2(fond, j);// on relance
+        } else {//sinon retour ecran menu
             ecran_menu();
         }
-
-
     } else if (!key[KEY_ESC]) {
-        if (j->niveau < 2) { //mise a jour de la progression du joueur
+        if (j->niveau < 2) {
             j->niveau = 2;
             sauvegarder_joueur(j);
         }
@@ -249,7 +247,7 @@ void jeu_niveau_2(BITMAP *fond_final, Joueur *j) {
     groupe.nb_personnages = 1;
 
     // position initiale du joueur si pas encore définie
-    if  (j->niveau == 2 && j->reprise_x == 500) {
+    if  (j->niveau == 2 && j->reprise_x == 500 || j->reprise_x==3300) {
         j->reprise_x = 200;
         j->reprise_y = 600;
     }
@@ -330,10 +328,6 @@ void jeu_niveau_2(BITMAP *fond_final, Joueur *j) {
     // boucle principale du niveau
     while (!game_over) {
         poll_keyboard();
-        if (key[KEY_ESC]) {
-            allegro_exit();
-            exit(0);
-        }
 
         // accès au mode démonstration si 1 est pressé
         static int compteur_demo = 1;
@@ -547,7 +541,7 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
     groupe.nb_personnages = 1;
 
     // position initiale si héritée du niveau précédent
-    if (j->niveau == 3 && j->reprise_x == 5300 ) {
+    if (j->niveau == 3 && j->reprise_x == 200 || j->reprise_x==5300 || j->reprise_x==4000|| j->reprise_x==7000 ) {
         j->reprise_x = 200;
         j->reprise_y = 700;
         sauvegarder_joueur(j);
@@ -614,10 +608,7 @@ void jeu_niveau_3(BITMAP *fond_final, Joueur *j) {
     while (!game_over) {
         poll_keyboard();
 
-        if (key[KEY_ESC]) {// quitte le jeu
-            allegro_exit();
-            exit(0);
-        }
+
 
         if (key[KEY_B]) {// retour au menu
             clear_keybuf();
