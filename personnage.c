@@ -237,11 +237,12 @@ bool collision_pic(Personnage* p, BITMAP* fond, float screenx) {
 }
 // gère la collision entre chaque personnage et les pics (supprime s’il touche)
 void gerer_collision_pics_groupe(GrpPersonnages *groupe, BITMAP *fond, float screenx) {
+    float offset_x = (int)screenx >= fond->w - SCREEN_W ? fond->w - SCREEN_W : screenx;
+
     for (int i = 0; i < groupe->nb_personnages; i++) {
         Personnage *p = &(groupe->persos[i]);
-        if (p->timer_pic > 0) continue; // immunisé
 
-        float offset_x = (int)screenx >= fond->w - SCREEN_W ? fond->w - SCREEN_W : screenx;
+        if (p->timer_pic > 0) continue; // immunisé
 
         for (int dx = 0; dx < p->largeur; dx++) {
             for (int dy = 0; dy < p->hauteur; dy++) {
@@ -250,11 +251,18 @@ void gerer_collision_pics_groupe(GrpPersonnages *groupe, BITMAP *fond, float scr
 
                 if (px >= 0 && px < fond->w && py >= 0 && py < fond->h) {
                     if (getpixel(fond, px, py) == makecol(104, 0, 0)) {
-                        p->x = -p->largeur; // tue le personnage en le mettant hors écran
-                        return;
+                        // Supprimer le personnage du tableau
+                        for (int j = i; j < groupe->nb_personnages - 1; j++) {
+                            groupe->persos[j] = groupe->persos[j + 1];
+                        }
+                        groupe->nb_personnages--; // décrémenter
+                        i--; // reculer l'indice car on a décalé les éléments
+                        goto next_personnage; // sortir proprement des boucles imbriquées
                     }
                 }
             }
         }
+
+        next_personnage:;
     }
 }

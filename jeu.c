@@ -111,7 +111,7 @@ void jeu_niveau_1(BITMAP *fond_final, Joueur *j) {//fonction qui gère la logiqu
 
                             if (j->niveau < 2) {
                                 j->niveau = 2;
-                                sauvegarder_joueur(j); // <-- AJOUT ici
+                                sauvegarder_joueur(j);
                             }
                             ecran_menu();
 
@@ -252,6 +252,11 @@ void jeu_niveau_2(BITMAP *fond_final, Joueur *j) {
     // initialisation du groupe avec un seul personnage
     GrpPersonnages groupe;
     groupe.nb_personnages = 1;
+    if (j->niveau < 2) {
+        j->niveau = 2;
+        sauvegarder_joueur(j);
+    }
+
 
     // position initiale du joueur si pas encore définie
     if  (j->niveau == 2 && j->reprise_x == 500 || j->reprise_x==3300) {
@@ -740,7 +745,7 @@ void gerer_acceleration(float *dragon_speed, int *dragon_acceleration_timer, int
         *dragon_speed = 7.0;  // vitesse du scroll augmente
         (*dragon_acceleration_timer)--;//decrementation
     } else if (space) {
-        *dragon_speed = 10;  // scroll acceleré quand on appuie sur espace
+        *dragon_speed = 10 ;  // scroll acceleré quand on appuie sur espace
     } else {
         *dragon_speed = 2;  // vitesse normal du jeu
     }
