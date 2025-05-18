@@ -742,7 +742,7 @@ void gerer_acceleration(float *dragon_speed, int *dragon_acceleration_timer, int
         *dragon_speed = 7.0;  // vitesse du scroll augmente
         (*dragon_acceleration_timer)--;//decrementation
     } else if (space) {
-        *dragon_speed = 10 ;  // scroll acceleré quand on appuie sur espace
+        *dragon_speed = 3 ;  // scroll acceleré quand on appuie sur espace
     } else {
         *dragon_speed = 2;  // vitesse normal du jeu
     }
